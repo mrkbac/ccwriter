@@ -11,13 +11,23 @@ dependencies = [
 readme = "README.md"
 requires-python = ">= 3.8"
 
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Robot Framework :: Tool",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.10",
+
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
-dev-dependencies = []
+dev-dependencies = [
+    "autopep8>=2.0.2",
+]
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -52,6 +62,7 @@ ignore = [
     'T20',     # flake8-print
     'TD',      # Todo
     'TRY003',
+    'UP007',
 ]
 
 unfixable = [

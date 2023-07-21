@@ -3,9 +3,11 @@
 https://www.cloudcompare.org/doc/wiki/index.php/BIN
 """
 
+from __future__ import annotations
+
 import io
 from pathlib import Path
-from typing import IO
+from typing import IO, Union
 
 import numpy as np
 
@@ -13,7 +15,7 @@ import numpy as np
 class CCWriter:
     """Write a CloudCompare BIN file."""
 
-    def __init__(self, file: str | Path | IO) -> None:
+    def __init__(self, file: Union[str, Path, IO]) -> None:
         """
 
         Args:
@@ -24,7 +26,7 @@ class CCWriter:
         self.cloud_counter = 0
         self.file = None
 
-        if isinstance(file, str | Path):
+        if isinstance(file, (str, Path)):
             self.file = open(file, "wb")
         elif hasattr(file, "write") and callable(file.write):
             self.file = file
@@ -83,7 +85,6 @@ class CCWriter:
         # Number of points
         buffer.write(count.to_bytes(4, "little"))
 
-
         combined_cloud = [cloud[:, 0], cloud[:, 1], cloud[:, 2]]
         dtypes = [("x", np.float32), ("y", np.float32), ("z", np.float32)]
 
@@ -137,11 +138,9 @@ class CCWriter:
 
         w_cloud = np.rec.fromarrays(combined_cloud, dtype=dtypes)
 
-
         self.cloud_counter += 1
         self.file.write(buffer.getvalue())
         self.file.write(w_cloud.tobytes())
-
 
     def finish(self) -> None:
         """Finish writing the file.
@@ -154,7 +153,7 @@ class CCWriter:
 
         self.file.seek(0)
         # Number of clouds
-        self.file.write(self.cloud_counter.to_bytes(4, "little")) # u32
+        self.file.write(self.cloud_counter.to_bytes(4, "little"))  # u32
 
         self.file.close()
         self.file = None
