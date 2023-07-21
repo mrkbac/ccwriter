@@ -1,15 +1,15 @@
 [project]
 name = "ccwriter"
 version = "0.1.0"
-description = "Add your description here"
+description = "Writer for CloudCompare .bin format"
 authors = [
     { name = "Marko Bausch", email = "60338487+mrkbac@users.noreply.github.com" }
 ]
 dependencies = [
-    "numpy>=1.24.4",
+    "numpy>=1.22",
 ]
 readme = "README.md"
-requires-python = ">= 3.10"
+requires-python = ">= 3.8"
 
 [build-system]
 requires = ["hatchling"]
@@ -29,22 +29,47 @@ max_line_length = 100
 
 [tool.ruff]
 line-length = 100
-select = ['ALL']
+select = ["ALL"]
 
 ignore = [
-    'ANN101',  # missing-type-self
-    'ANN401',  # dynamically-typed-expression
-    'C901',    # complex-structure
+    'ANN101', # missing-type-self
+    'ANN102', # missing-type-cls
+    'ANN204', # missing-type-cls
+
+    'C',
     'D',       # pydocstyle
-    'EM101',   # raw-string-in-exception
-    'EM102',   # f-string-in-exception
-    'PLR2004', # MagicValueComparisons
-    'S101',    # AssertUsed
-    'TCH',     # flake8-type-checking
-    'TCH',     # flake8-type-checking
-    'TRY003',  # raise-vanilla-args
+    'EM101',
+    'ERA001',  # CommentedOutCode
+    'FIX002',  # Line contains TODO
+    'INP',     # flake8-no-pep420
+    'PD',      # pandas-vet
+    'PLR',
+    'PLR0913', # Too many arguments to function call
+    'PT',      # PyTest
+    'PTH',
+    'S',       # flake8-bandit
+    'SIM',
+    'T20',     # flake8-print
+    'TD',      # Todo
+    'TRY003',
 ]
 
-target-version = 'py310'
+unfixable = [
+    'T20',    # flake8-print
+    'ERA001', # CommentedOutCode
+]
 
+src = ['src']
 
+target-version = 'py38'
+
+[tool.ruff.flake8-annotations]
+# Whether to suppress ANN000-level violations for arguments matching the "dummy" variable regex (like _).
+suppress-dummy-args = true
+# Whether to suppress ANN200-level violations for functions that meet either of the following criteria:
+# - Contain no return statement.
+# - Explicit return statement(s) all return None (explicitly or implicitly).
+suppress-none-returning = true
+
+[tool.ruff.pydocstyle]
+convention = "google"
