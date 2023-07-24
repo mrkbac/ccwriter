@@ -6,10 +6,19 @@ https://www.cloudcompare.org/doc/wiki/index.php/BIN
 from __future__ import annotations
 
 import io
+from enum import IntFlag
 from pathlib import Path
 from typing import IO, Union
 
 import numpy as np
+
+
+class CCFlags(IntFlag):
+    always_on = 1
+    colors = 2
+    normals = 4
+    scalar = 8
+    cloud_name = 16
 
 
 class CCWriter:
@@ -19,7 +28,7 @@ class CCWriter:
         """
 
         Args:
-        file : str or Path or IO
+        file: str or Path or IO
             The file to write to.
         """
 
@@ -88,7 +97,7 @@ class CCWriter:
         combined_cloud = [cloud[:, 0], cloud[:, 1], cloud[:, 2]]
         dtypes = [("x", np.float32), ("y", np.float32), ("z", np.float32)]
 
-        flags = 1
+        flags = CCFlags.always_on
         if color is not None:
             if not isinstance(color, np.ndarray):
                 raise TypeError("Expected np.ndarray for 'colors'")
@@ -98,7 +107,7 @@ class CCWriter:
             combined_cloud.extend([color[:, 0], color[:, 1], color[:, 2]])
             dtypes.extend([("r", np.uint8), ("g", np.uint8), ("b", np.uint8)])
 
-            flags += 2
+            flags |= CCFlags.colors
         if normal is not None:
             if not isinstance(normal, np.ndarray):
                 raise TypeError("Expected np.ndarray for 'normals'")
@@ -109,7 +118,7 @@ class CCWriter:
             combined_cloud.extend([normal[:, 0], normal[:, 1], normal[:, 2]])
             dtypes.extend([("nx", np.float32), ("ny", np.float32), ("nz", np.float32)])
 
-            flags += 4
+            flags |= CCFlags.normals
         if scalar is not None:
             if isinstance(scalar, int):
                 if scalar < 0 or cloud.ndim >= scalar:
@@ -125,7 +134,7 @@ class CCWriter:
             combined_cloud.append(scalar)
             dtypes.append(("scalar", np.float64))
 
-            flags += 8
+            flags |= CCFlags.scalar
         if name is not None:
             if not isinstance(name, str):
                 raise TypeError("Expected str for 'name'")
@@ -157,3 +166,50 @@ class CCWriter:
 
         self.file.close()
         self.file = None
+
+
+class CCReader(dict):
+    def __init__(self, file: Union[str, Path, IO]) -> None:
+        """
+
+        Args:
+        file: str or Path or IO
+            The file to write to.
+        """
+
+        if isinstance(file, (str, Path)):
+            file = open(file, "rb")
+        elif not hasattr(file, "read") or not callable(file.read):
+            raise TypeError("Expected str, Path or IO for 'file'")
+
+        cloud_count = int.from_bytes(file.read(4), byteorder="little")  # cloud count
+
+        for idx in range(cloud_count):
+            number_of_points = int.from_bytes(file.read(4), byteorder="little")  # u32
+            flags = int.from_bytes(file.read(1), byteorder="little")  # u8
+
+            dtype = [("x", np.float32), ("y", np.float32), ("z", np.float32)]
+
+            if flags & CCFlags.colors:
+                dtype.extend([("r", np.uint8), ("g", np.uint8), ("b", np.uint8)])
+            if flags & CCFlags.normals:
+                dtype.extend([("nx", np.float32), ("ny", np.float32), ("nz", np.float32)])
+            if flags & CCFlags.scalar:
+                dtype.append(("scalar", np.float64))
+
+            name = None
+            if flags & CCFlags.cloud_name:
+                name = ""
+                while True:
+                    char = file.read(1)
+                    if char == b"\x00":
+                        break
+                    name += char.decode("ascii")
+
+            cloud = np.fromfile(file, dtype=dtype, count=number_of_points)
+
+            self[idx] = cloud
+            if name is not None:
+                self[name] = cloud
+
+        file.close()

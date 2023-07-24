@@ -1,6 +1,6 @@
 [project]
 name = "ccwriter"
-version = "0.1.0"
+version = "0.2.0"
 description = "Writer for CloudCompare .bin format"
 authors = [
     { name = "Marko Bausch", email = "60338487+mrkbac@users.noreply.github.com" }
@@ -13,10 +13,12 @@ requires-python = ">= 3.8"
 
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Framework :: Robot Framework :: Tool",
     "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.10",
-
+    "Programming Language :: Python :: 3.11",
 ]
 
 [build-system]
