@@ -1,7 +1,6 @@
 name: Bump
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       version:
@@ -15,7 +14,7 @@ on:
           - patch
 
 jobs:
-  lint:
+  bump:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +31,7 @@ jobs:
           git config --global user.name 'autobump'
           git config --global user.email 'autobump'
           VERSION=`hatch version`
-          hatch version ${inputs.version}
+          hatch version ${{ inputs.version }}
           NEW_VERSION=`hatch version`
           git add ./src/ccwriter/__about__.py
           git commit -m "Bump version: $VERSION → $NEW_VERSION"
