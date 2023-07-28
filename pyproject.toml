@@ -38,7 +38,7 @@ dev-dependencies = [
 ]
 
 [tool.hatch.version]
-path = "src/ccwriter/__init__.py"
+path = "src/ccwriter/__about__.py"
 
 [tool.hatch.metadata]
 allow-direct-references = true
