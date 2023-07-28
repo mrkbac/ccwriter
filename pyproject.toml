@@ -1,6 +1,5 @@
 [project]
 name = "ccwriter"
-version = "0.2.1"
 description = "Writer for CloudCompare .bin format"
 authors = [
     { name = "Marko Bausch", email = "60338487+mrkbac@users.noreply.github.com" }
@@ -23,8 +22,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 
+dynamic = ["version"]
+
 [project.urls]
-repository = "https://github.com/mkrbac/ccwriter"
+Source = "https://github.com/mkrbac/ccwriter"
 
 [build-system]
 requires = ["hatchling"]
@@ -35,6 +36,9 @@ managed = true
 dev-dependencies = [
     "autopep8>=2.0.2",
 ]
+
+[tool.hatch.version]
+path = "src/ccwriter/__init__.py"
 
 [tool.hatch.metadata]
 allow-direct-references = true
