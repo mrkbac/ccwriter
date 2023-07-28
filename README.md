@@ -2,6 +2,10 @@
 
 Writer / Reader for the CloudCompare [BIN Format](https://www.cloudcompare.org/doc/wiki/index.php/BIN)
 
+[![PyPI version](https://img.shields.io/pypi/v/ccwriter.svg)](https://pypi.python.org/pypi/ccwriter/)
+[![PyPI license](https://img.shields.io/pypi/l/ccwriter.svg)](https://pypi.python.org/pypi/ccwriter/)
+[![PyPI download month](https://img.shields.io/pypi/dm/ccwriter.svg)](https://pypi.python.org/pypi/ccwriter/)
+
 ## Installation
 
 ```bash

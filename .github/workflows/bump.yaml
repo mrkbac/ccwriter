@@ -35,6 +35,6 @@ jobs:
           NEW_VERSION=`hatch version`
           git add ./src/ccwriter/__about__.py
           git commit -m "Bump version: $VERSION → $NEW_VERSION"
-          git tag "v$VERSION"
+          git tag "v$NEW_VERSION"
           git push
           git push --tags
